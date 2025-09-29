@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const mongoUri = process.env.MONGO_URI; // expect MONGO_URI in .env
 
 if (!mongoUri) {
-  console.error("❌ MONGO_URI is not defined in .env file");
+  console.error("MONGO_URI is not defined in .env file");
   process.exit(1); // stop the server immediately
 }
 
@@ -34,9 +34,9 @@ mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-  .then(() => console.log("✅ MongoDB connected"))
+  .then(() => console.log("MongoDB connected"))
   .catch(err => {
-    console.error("❌ MongoDB connection error:", err.message);
+    console.error("MongoDB connection error:", err.message);
     process.exit(1);
   });
 
@@ -103,7 +103,7 @@ io.on('connection', (socket) => {
 
   // Handle disconnects
   socket.on('disconnect', async () => {
-    console.log(`❌ Socket disconnected: ${socket.id}`);
+    console.log(`Socket disconnected: ${socket.id}`);
     try {
       // find all sessions this socket belongs to and clean up
       const sessions = await mongoose.model('GameSession').find({ 'players.socketId': socket.id });
@@ -117,4 +117,4 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
