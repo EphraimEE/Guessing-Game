@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const connectDB = require('./config/db');
 const http = require('http');
 const mongoose = require('mongoose');
 const { Server } = require('socket.io');
@@ -22,9 +23,22 @@ const io = new Server(server);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.error('❌ MongoDB error:', err));
+const mongoUri = process.env.MONGO_URI; // expect MONGO_URI in .env
+
+if (!mongoUri) {
+  console.error("❌ MONGO_URI is not defined in .env file");
+  process.exit(1); // stop the server immediately
+}
+
+mongoose.connect(mongoUri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch(err => {
+    console.error("❌ MongoDB connection error:", err.message);
+    process.exit(1);
+  });
 
 io.on('connection', (socket) => {
   console.log(`⚡ New socket connected: ${socket.id}`);
